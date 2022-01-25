@@ -77,8 +77,31 @@ const getAllAppointment = async(req, res, next) => {
   }
 }
 
+const deleteAppointment = async(req, res, next) => {
+    
+  try {
+    console.log(`hehehe`);
+
+    const appointments = await Appointment.destroy({
+      where: {
+        id: req.params.appointmentId
+      }
+    })
+
+    if(appointments) {
+      res.status(200).json(appointments)
+
+    } 
+  } catch (error) {
+
+    next(error)
+    
+  }
+}
+
 module.exports = {
   createAppointment,
   getMyAppointment,
-  getAllAppointment
+  getAllAppointment,
+  deleteAppointment
 }

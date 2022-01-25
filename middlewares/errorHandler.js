@@ -14,6 +14,9 @@ const errorHandler = (err, req, res, next) => {
       case `NotFound`:
           res.status(404).json({message: `Barber not found`})
           break;
+      case `NotFound`:
+          res.status(404).json({message: `Barber not found`})
+          break;
       case `SequelizeValidationError`:
           res.status(400).json({message: err.errors[0].message})
           break;
@@ -23,6 +26,9 @@ const errorHandler = (err, req, res, next) => {
       case `FAILED_REGISTER`:
       case `SequelizeDatabaseError`:
           res.status(400).json({message: "Bad Request"})
+          break;
+      case `AppointmentNotFound`:
+          res.status(400).json({message: "Appointment not found"})
           break;
       case `INVALID_CREDS`:
           res.status(401).json({ message: `Invalid email or password`})
