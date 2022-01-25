@@ -7,11 +7,11 @@ const authorization = require('../middlewares/authorization');
 
 router.post(`/register`, userController.register)
 router.post(`/login`, userController.login)
-router.get('/translate', appointmentController.translateCoordinate)
-router.get('/forecast', appointmentController.getWeatherForecast)
 
 router.use(authentication)
 
+router.get('/translate', appointmentController.translateCoordinate)
+router.get('/forecast', appointmentController.getWeatherForecast)
 router.get('/barbers', barberController.getBarbers)
 
 router.post('/appointments/:barberId', appointmentController.createAppointment)
