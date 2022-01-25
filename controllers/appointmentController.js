@@ -15,7 +15,7 @@ const createAppointment = async (req, res, next) => {
         lat, 
         long, 
         address, 
-        appointmentDate: new Date(), 
+        appointmentDate, 
         schedule, 
         price,
         barberId,
@@ -34,7 +34,7 @@ const createAppointment = async (req, res, next) => {
         
       let mailDetails = {
           from: 'shavetiv8@gmail.com',
-          to: "pandikaadi@gmail.com",
+          to: req.currentUser.email,
           subject: 'Success create a new booking',
           text: `hi, ${req.currentUser.email}!
           you have created a new booking on ${newApp.appointmentDate}`
@@ -42,7 +42,6 @@ const createAppointment = async (req, res, next) => {
         
       mailTransporter.sendMail(mailDetails, function(err, data) {
           if(err) {
-            console.log(err);
               next(err)
           } else {
             res.status(201).json(newApp)
