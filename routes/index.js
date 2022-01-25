@@ -14,7 +14,8 @@ router.get('/barbers', barberController.getBarbers)
 
 router.post('/appointments/:barberId', appointmentController.createAppointment)
 
-router.get('/user_appointment', appointmentController.getMyAppointment)
 router.get('/appointments', appointmentController.getAllAppointment)
+router.get('/myAppointment', appointmentController.getMyAppointment)
+router.delete('/myAppointment/:appointmentId', authorization, appointmentController.deleteAppointment)
 
 module.exports = router
