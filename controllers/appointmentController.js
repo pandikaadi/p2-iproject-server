@@ -1,6 +1,46 @@
 const { User, Barber, Appointment } = require("../models");
 
 const nodemailer = require('nodemailer');
+const axios = require('axios')
+
+const translateCoordinate = async (req, res, next) => {
+  const {lat, long} = req.body
+  
+  try {
+    
+    const translated = await axios({
+      method: 'get',
+      url: `https://nominatim.openstreetmap.org/reverse?lat=${+lat}&lon=${+long}&format=json`  
+    })
+    res.status(200).json(translated.data.display_name);
+
+  } catch (error) {
+
+    next(error)
+    
+  }
+
+}
+
+const getWeatherForecast = async (req, res, next) => {
+  const {city} = req.body
+  
+  try {
+    
+    const forecast = await axios({
+      method: 'get',
+      url: `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.OPEN_WEATHER_API_KEY}`  
+    })
+    res.status(200).json(forecast.data);
+
+  } catch (error) {
+    console.log(error);
+
+    next(error)
+    
+  }
+
+}
 
 const createAppointment = async (req, res, next) => {
 
@@ -129,5 +169,7 @@ module.exports = {
   createAppointment,
   getMyAppointment,
   getAllAppointment,
-  deleteAppointment
+  deleteAppointment,
+  translateCoordinate,
+  getWeatherForecast
 }
