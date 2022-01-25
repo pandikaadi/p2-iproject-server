@@ -10,7 +10,6 @@ const authorization = async(req, res, next) => {
       if(!appointment) {
         throw({name:`AppointmentNotFound`})
       } else {
-        console.log(appointment);
         if(appointment.userId === req.currentUser.id) {
           next()
         } else {

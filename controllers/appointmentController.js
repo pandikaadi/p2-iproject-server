@@ -1,5 +1,7 @@
 const { User, Barber, Appointment } = require("../models");
 
+const nodemailer = require('nodemailer');
+
 const createAppointment = async (req, res, next) => {
 
   try {
@@ -22,7 +24,30 @@ const createAppointment = async (req, res, next) => {
 
       if(newApp) {
 
-        res.status(201).json(newApp)
+        let mailTransporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+              user: 'shavetiv8@gmail.com',
+              pass: process.env.PASS_EMAIL
+          }
+      });
+        
+      let mailDetails = {
+          from: 'shavetiv8@gmail.com',
+          to: req.currentUser.email,
+          subject: 'Success create a new booking',
+          text: `hi, ${req.currentUser.email}!
+          you have created a new booking on ${newApp.appointmentDate}`
+      };
+        
+      mailTransporter.sendMail(mailDetails, function(err, data) {
+          if(err) {
+              next(err)
+          } else {
+            res.status(201).json(newApp)
+          }
+      });
+
 
       } else {
         throw({name: `internal`})
@@ -32,6 +57,7 @@ const createAppointment = async (req, res, next) => {
       throw({name:`NotFound`})
     }
   } catch (error) {
+    
 
     next(error)
     
