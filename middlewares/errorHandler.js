@@ -14,9 +14,6 @@ const errorHandler = (err, req, res, next) => {
       case `NotFound`:
           res.status(404).json({message: `Barber not found`})
           break;
-      case `NotFound`:
-          res.status(404).json({message: `Barber not found`})
-          break;
       case `SequelizeValidationError`:
           res.status(400).json({message: err.errors[0].message})
           break;
@@ -29,6 +26,8 @@ const errorHandler = (err, req, res, next) => {
           break;
       case `AppointmentNotFound`:
           res.status(400).json({message: "Appointment not found"})
+      case `uniqueAppointment`:
+          res.status(400).json({message: "Could not make more than one appointment"})
           break;
       case `INVALID_CREDS`:
           res.status(401).json({ message: `Invalid email or password`})

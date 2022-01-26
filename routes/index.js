@@ -7,16 +7,17 @@ const authorization = require('../middlewares/authorization');
 
 router.post(`/register`, userController.register)
 router.post(`/login`, userController.login)
+router.get('/appointments', appointmentController.getAllAppointment)
 
 router.use(authentication)
 
-router.get('/translate', appointmentController.translateCoordinate)
+router.post('/translate', appointmentController.translateCoordinate)
 router.get('/forecast', appointmentController.getWeatherForecast)
 router.get('/barbers', barberController.getBarbers)
+router.get('/barbers/:barberId', barberController.getOneBarber)
 
 router.post('/appointments/:barberId', appointmentController.createAppointment)
 
-router.get('/appointments', appointmentController.getAllAppointment)
 router.get('/myAppointment', appointmentController.getMyAppointment)
 router.delete('/myAppointment/:appointmentId', authorization, appointmentController.deleteAppointment)
 

@@ -1,4 +1,5 @@
 const { User, Barber, Appointment } = require("../models");
+const { Op } = require("sequelize")
 
 const nodemailer = require('nodemailer');
 const axios = require('axios')
@@ -44,53 +45,66 @@ const getWeatherForecast = async (req, res, next) => {
 const createAppointment = async (req, res, next) => {
 
   try {
+    
     const {barberId} = req.params
     const {lat, long, address, appointmentDate, schedule, price} = req.body
 
     const barber = await Barber.findByPk(barberId)
     if(barber) {
 
-      const newApp = await Appointment.create({
-        lat, 
-        long, 
-        address, 
-        appointmentDate, 
-        schedule, 
-        price,
-        barberId,
-        userId: req.currentUser.id
+      const findApp = await Appointment.findOne({
+        where: {
+          userId: req.currentUser.id,
+        }
       })
 
-      if(newApp) {
-
-        let mailTransporter = nodemailer.createTransport({
-          service: 'gmail',
-          auth: {
-              user: 'shavetiv8@gmail.com',
-              pass: process.env.PASS_EMAIL
-          }
-      });
-        
-      let mailDetails = {
-          from: 'shavetiv8@gmail.com',
-          to: req.currentUser.email,
-          subject: 'Success create a new booking',
-          text: `hi, ${req.currentUser.email}!
-          you have created a new booking on ${newApp.appointmentDate}`
-      };
-        
-      mailTransporter.sendMail(mailDetails, function(err, data) {
-          if(err) {
-              next(err)
-          } else {
-            res.status(201).json(newApp)
-          }
-      });
-
-
+      if(findApp) {
+        throw({name: `uniqueAppointment`})
       } else {
-        throw({name: `internal`})
+
+        const newApp = await Appointment.create({
+          lat, 
+          long, 
+          address, 
+          appointmentDate, 
+          schedule, 
+          price,
+          barberId,
+          userId: req.currentUser.id
+        })
+  
+        if(newApp) {
+  
+          let mailTransporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'shavetiv8@gmail.com',
+                pass: process.env.PASS_EMAIL
+            }
+        });
+          
+        let mailDetails = {
+            from: 'shavetiv8@gmail.com',
+            to: req.currentUser.email,
+            subject: 'Success create a new booking',
+            text: `hi, ${req.currentUser.email}!
+            you have created a new booking on ${newApp.appointmentDate}`
+        };
+          
+        mailTransporter.sendMail(mailDetails, function(err, data) {
+            if(err) {
+                next(err)
+            } else {
+              res.status(201).json(newApp)
+            }
+        });
+  
+  
+        } else {
+          throw({name: `internal`})
+        }
       }
+
 
     } else {
       throw({name:`NotFound`})
@@ -128,7 +142,21 @@ const getAllAppointment = async(req, res, next) => {
     
   try {
 
+    const {selectedDate, barberId} = req.query
+
+    const recordedDate = selectedDate.split('').splice(0,11).join('')
+    let startDate = new Date(recordedDate + "00:00:00.000Z")
+
+    let endDate = new Date(recordedDate + "23:59:59.999Z")
+
+
     const appointments = await Appointment.findAll({
+      where: {
+        appointmentDate: {
+          [Op.between]: [startDate, endDate]
+        },
+        barberId
+      }
     })
 
     if(appointments) {
@@ -145,7 +173,6 @@ const getAllAppointment = async(req, res, next) => {
 const deleteAppointment = async(req, res, next) => {
     
   try {
-    console.log(`hehehe`);
 
     const appointments = await Appointment.destroy({
       where: {
