@@ -24,9 +24,10 @@ const translateCoordinate = async (req, res, next) => {
 }
 
 const getWeatherForecast = async (req, res, next) => {
-  const {city} = req.body
+  const {city} = req.query
   
   try {
+    
     
     const forecast = await axios({
       method: 'get',
@@ -124,14 +125,18 @@ const getMyAppointment = async(req, res, next) => {
     const appointment = await Appointment.findOne({
       where: {
         userId: req.currentUser.id
-      }
+      },
+      include: [Barber]
     })
 
     if(appointment) {
       res.status(200).json(appointment)
 
+    } else {
+      res.status(200).json(null)
     } 
   } catch (error) {
+    
 
     next(error)
     
@@ -176,7 +181,7 @@ const deleteAppointment = async(req, res, next) => {
 
     const appointments = await Appointment.destroy({
       where: {
-        id: req.params.appointmentId
+        userId: req.currentUser.id
       }
     })
 
@@ -191,11 +196,44 @@ const deleteAppointment = async(req, res, next) => {
   }
 }
 
+const editAppointment = async(req, res, next) => {
+    
+  try {
+
+    const {lat, long, address, barberId, appointmentDate, schedule, price} = req.body
+
+    const appointments = await Appointment.update({
+      lat,
+      long,
+      address,
+      appointmentDate,
+      schedule,
+      price
+    },{
+      where: {
+        userId: req.currentUser.id,
+        barberId
+      }
+    })
+
+    if(appointments) {
+      res.status(200).json(appointments)
+
+    } 
+  } catch (error) {
+
+    next(error)
+    
+  }
+}
+
+
 module.exports = {
   createAppointment,
   getMyAppointment,
   getAllAppointment,
   deleteAppointment,
   translateCoordinate,
-  getWeatherForecast
+  getWeatherForecast,
+  editAppointment
 }

@@ -3,9 +3,13 @@ const { Appointment } = require(`../models`)
 const authorization = async(req, res, next) => {
     
     try {
-      const {appointmentId} = req.params
       
-      const appointment = await Appointment.findByPk(appointmentId)
+      
+      const appointment = await Appointment.findOne({
+        where: {
+          userId: req.currentUser.id
+        }
+      })
 
       if(!appointment) {
         throw({name:`AppointmentNotFound`})
