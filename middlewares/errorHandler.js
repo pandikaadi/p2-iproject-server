@@ -20,6 +20,9 @@ const errorHandler = (err, req, res, next) => {
       case `SequelizeUniqueConstraintError`:
           res.status(400).json({message: err.errors[0].message})
           break;
+      case `scheduleValidationError`:
+          res.status(400).json({message: "Schedule could not empty"})
+          break;
       case `FAILED_REGISTER`:
       case `SequelizeDatabaseError`:
           res.status(400).json({message: "Bad Request"})

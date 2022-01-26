@@ -11,8 +11,8 @@ router.get('/appointments', appointmentController.getAllAppointment)
 
 router.use(authentication)
 
-router.post('/translate', appointmentController.translateCoordinate)
 router.get('/forecast', appointmentController.getWeatherForecast)
+router.post('/translate', appointmentController.translateCoordinate)
 router.get('/barbers', barberController.getBarbers)
 router.get('/barbers/:barberId', barberController.getOneBarber)
 
