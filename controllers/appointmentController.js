@@ -27,8 +27,6 @@ const getWeatherForecast = async (req, res, next) => {
   const {city} = req.query
   
   try {
-    
-    
     const forecast = await axios({
       method: 'get',
       url: `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${process.env.OPEN_WEATHER_API_KEY}`  
