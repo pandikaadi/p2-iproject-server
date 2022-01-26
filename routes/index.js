@@ -19,6 +19,7 @@ router.get('/barbers/:barberId', barberController.getOneBarber)
 router.post('/appointments/:barberId', appointmentController.createAppointment)
 
 router.get('/myAppointment', appointmentController.getMyAppointment)
-router.delete('/myAppointment/:appointmentId', authorization, appointmentController.deleteAppointment)
+router.delete('/myAppointment/', authorization, appointmentController.deleteAppointment)
+router.put('/myAppointment/', authorization, appointmentController.editAppointment)
 
 module.exports = router
