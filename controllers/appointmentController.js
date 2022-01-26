@@ -172,7 +172,7 @@ const deleteAppointment = async (req, res, next) => {
         if (err) {
           next(err);
         } else {
-          res.status(200).json(appointments);
+          res.status(200).json({message: `appointment has been deleted`});
         }
       })
     }
@@ -226,13 +226,14 @@ const editAppointment = async (req, res, next) => {
           if (err) {
             next(err);
           } else {
-            res.status(200).json(appointments);
+            res.status(200).json({message: `appointment has been edited`});
           }
         })
       }
 
     }
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };
