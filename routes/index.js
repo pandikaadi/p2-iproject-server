@@ -4,7 +4,7 @@ const barberController = require('../controllers/barberController');
 const appointmentController = require('../controllers/appointmentController');
 const authentication = require('../middlewares/authentication');
 const authorization = require('../middlewares/authorization');
-
+console.log(`hehehehe`);
 router.post(`/register`, userController.register)
 router.post(`/login`, userController.login)
 router.get('/appointments', appointmentController.getAllAppointment)
